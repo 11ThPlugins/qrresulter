@@ -1,0 +1,99 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+model Company {
+  id        String   @id @default(cuid())
+  name      String
+  email     String   @unique
+  password  String
+  logoUrl   String?  @map("logo_url")
+  phone     String?
+  address   String?
+  website   String?
+  isActive  Boolean  @default(true) @map("is_active")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  // Relations
+  tubes     Tube[]
+  auditLogs AuditLog[]
+
+  @@map("companies")
+}
+
+model Tube {
+  id                String    @id @default(cuid())
+  qrHash            String    @unique @map("qr_hash")
+  companyId         String    @map("company_id")
+  
+  // Basic Information
+  tubeType          String    @map("tube_type")
+  serialNumber      String    @map("serial_number")
+  
+  // Technical Specifications
+  weight            Float?
+  capacity          Float?
+  pressure          Float?
+  volume            Float?
+  
+  // Inspection & Maintenance
+  inspectionDate    DateTime? @map("inspection_date")
+  nextInspectionDate DateTime? @map("next_inspection_date")
+  lastServiceDate   DateTime? @map("last_service_date")
+  
+  // Environmental Data
+  temperature       Float?
+  humidity          Float?
+  
+  // Status & Codes
+  statusCodes       String?   @map("status_codes")
+  currentStatus     String    @default("active") @map("current_status")
+  
+  // Additional Information
+  manufacturer      String?
+  model             String?
+  yearManufactured  Int?      @map("year_manufactured")
+  location          String?
+  notes             String?
+  
+  // QR Code Settings
+  qrCodeUrl         String?   @map("qr_code_url")
+  qrGeneratedAt     DateTime? @map("qr_generated_at")
+  
+  // Timestamps
+  createdAt         DateTime  @default(now()) @map("created_at")
+  updatedAt         DateTime  @updatedAt @map("updated_at")
+
+  // Relations
+  company           Company   @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  auditLogs         AuditLog[]
+
+  @@unique([companyId, serialNumber])
+  @@map("tubes")
+}
+
+model AuditLog {
+  id          String   @id @default(cuid())
+  tubeId      String   @map("tube_id")
+  companyId   String   @map("company_id")
+  action      String   // created, updated, deleted, viewed
+  changes     String?  // JSON string of changes
+  ipAddress   String?  @map("ip_address")
+  userAgent   String?  @map("user_agent")
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  // Relations
+  tube        Tube     @relation(fields: [tubeId], references: [id], onDelete: Cascade)
+  company     Company  @relation(fields: [companyId], references: [id], onDelete: Cascade)
+
+  @@map("audit_logs")
+}

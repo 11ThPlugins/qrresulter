@@ -1,0 +1,80 @@
+{
+  "name": "kano-marine-qr-system",
+  "version": "1.0.0",
+  "description": "Professional QR Code Management System for Industrial Tube Tracking - Kano Marine",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "type-check": "tsc --noEmit",
+    "electron": "electron electron/main.js",
+    "electron-dev": "concurrently \"npm run dev\" \"wait-on http://localhost:3000 && electron electron/main.js\"",
+    "dist": "npm run build && electron-builder",
+    "build-all": "npm run build && electron-builder",
+    "build-win": "npm run build && electron-builder --win"
+  },
+  "dependencies": {
+    "@tailwindcss/forms": "^0.5.10",
+    "@types/qrcode": "^1.5.5",
+    "lucide-react": "^0.294.0",
+    "next": "14.0.4",
+    "qrcode": "^1.5.4",
+    "qrcode.react": "^3.1.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.10.4",
+    "@types/react": "^18.2.45",
+    "@types/react-dom": "^18.2.18",
+    "autoprefixer": "^10.4.16",
+    "concurrently": "^8.2.2",
+    "electron": "^28.1.0",
+    "electron-builder": "^24.9.1",
+    "eslint": "^8.56.0",
+    "eslint-config-next": "14.0.4",
+    "postcss": "^8.4.32",
+    "tailwindcss": "^3.3.6",
+    "typescript": "^5.3.3",
+    "wait-on": "^7.2.0"
+  },
+  "keywords": [
+    "qr-code",
+    "tube-tracking",
+    "industrial",
+    "nextjs",
+    "kano-marine",
+    "inventory-management"
+  ],
+  "author": "Kano Marine",
+  "license": "MIT",
+  "main": "electron/main.js",
+  "build": {
+    "appId": "com.kanomarine.qrsystem",
+    "productName": "Kano Marine QR System",
+    "directories": {
+      "output": "dist"
+    },
+    "files": [
+      "electron/**/*",
+      "out/**/*",
+      "node_modules/**/*",
+      "package.json"
+    ],
+    "win": {
+      "target": "nsis"
+    },
+    "mac": {
+      "target": "dmg"
+    },
+    "linux": {
+      "target": "AppImage"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true
+    }
+  }
+}
